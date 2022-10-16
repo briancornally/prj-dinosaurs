@@ -1,4 +1,14 @@
-// Create Dino Constructor
+/**
+ * @description Represents a Dinosaur
+ * @constructor Create Dino Constructor
+ * @param {string} species
+ * @param {number} weight
+ * @param {number} height
+ * @param {string} diet
+ * @param {number} where
+ * @param {number} when
+ * @param {number} fact
+ */
 class Dino {
   constructor(species, weight, height, diet, where, when, fact) {
     this.species = species;
@@ -11,14 +21,15 @@ class Dino {
   }
 }
 
-// Create Dino Objects
+/**
+ * @description Create Dino Class Instances
+ * @returns dinos promise
+ */
 
 function getDinos() {
   return fetch("dinos.json")
     .then((response) => response.json())
     .then((json) => {
-      console.log("getDinos");
-      console.log(json);
       return json.Dinos.map(
         (dino) =>
           new Dino(
@@ -35,8 +46,14 @@ function getDinos() {
     .catch((error) => console.log(error));
 }
 
-// Create Human Object
-
+/**
+ * @description Represents a Human
+ * @constructor Create Human Class Instance
+ * @param {string} name
+ * @param {number} height
+ * @param {string} diet
+ * @param {number} weight
+ */
 class Human {
   constructor(name, height, diet, weight) {
     this.name = name;
@@ -47,26 +64,90 @@ class Human {
   }
 }
 
+/**
+ * @description generate a human div Tile
+ * @param {string} human
+ */
+function generateHumanTile(human) {
+  const tile = document.createElement("div");
+  tile.setAttribute("class", "grid-item");
+
+  const title = document.createElement("h3");
+  title.innerText = human.name;
+
+  const img = document.createElement("img");
+  img.setAttribute("src", `images/human.png`);
+
+  tile.appendChild(title);
+  tile.appendChild(img);
+  return tile;
+}
+
+/**
+ * @description validate expected type and not empty
+ * @param {string} value
+ * @param {string} name
+ * @param {string} expectedType
+ */
+function strValidate(value, name, expectedType) {
+  try {
+    if (expectedType === "number") {
+      value = +value;
+    }
+    if (expectedType === "string" && !value.trim().length > 0) {
+      throw new error();
+    }
+    if (expectedType === "number" && !value > 0) {
+      throw new error();
+    }
+    actualType = typeof value;
+    if (actualType != expectedType) {
+      throw new error();
+    }
+  } catch {
+    event.stopImmediatePropagation();
+    let notify = document.getElementById("err");
+    notify.innerHTML = "Please check " + name;
+    notify.style.display = "block";
+  }
+}
+
+/**
+ * @description get human details from form DOM
+ * @returns Human Class Instance
+ */
 function getHuman() {
   let name = document.getElementById("name").value;
-  let height =
-    +document.getElementById("inches").value +
-    +document.getElementById("feet").value * 12;
+  let feet = document.getElementById("feet").value;
+  let inches = +document.getElementById("inches").value;
   let diet = document.getElementById("diet").value;
   let weight = document.getElementById("weight").value;
+
+  strValidate(diet, "Diet:", "string");
+  strValidate(weight, "Weight:", "number");
+  strValidate(feet, "feet:", "number");
+  strValidate(inches, "inches:", "number");
+  strValidate(name, "Name:", "string");
+
+  let height = +inches + feet * 12;
   const human = new Human(name, height, diet, weight);
-  console.log("newHuman");
-  console.log(human);
   return human;
 }
 
-// Use IIFE to get human data from form
+/**
+ * @description get human details from form with IIFE
+ * @param {string} value
+ * @param {string} name
+ * @param {string} expectedType
+ */
 (function () {
   document.getElementById("btn").addEventListener("click", getHuman);
 })();
 
-// Create Dino Compare Method 1 - weight
-// NOTE: Weight in JSON file is in lbs, height in inches.
+/**
+ * @description Create Dino Compare Method 1 - weight
+ * @returns string
+ */
 Dino.prototype.compareWeight = function (humanWeight) {
   const diff = Math.floor(this.weight - humanWeight);
   const factor = Math.floor(this.weight / humanWeight);
@@ -74,8 +155,10 @@ Dino.prototype.compareWeight = function (humanWeight) {
   return result;
 };
 
-// Create Dino Compare Method 2 - height
-// NOTE: Weight in JSON file is in lbs, height in inches.
+/**
+ * @description Create Dino Compare Method 2 - height
+ * @returns string
+ */
 Dino.prototype.compareHeight = function (humanHeight) {
   const diff = Math.floor(this.height - humanHeight);
   const factor = Math.floor(this.height / humanHeight);
@@ -83,28 +166,30 @@ Dino.prototype.compareHeight = function (humanHeight) {
   return result;
 };
 
-// Create Dino Compare Method 3
-// NOTE: Weight in JSON file is in lbs, height in inches.
+/**
+ * @description Create Dino Compare Method 3 - diet
+ * @returns string
+ */
 Dino.prototype.compareDiet = function (humanDiet) {
   return humanDiet.toLowerCase() == this.diet
     ? `${humanDiet} also!`
     : `${this.diet.charAt(0).toUpperCase()}${this.diet.slice(1)}`;
 };
 
-// Generate Tiles for each Dino in Array
-
-// Add tiles to DOM
-
-// Remove form from screen
-function removeForm() {
-  document.getElementById("dino-compare").style.display = "none";
-}
-
+/**
+ * @description helper function for random number
+ * @returns number
+ */
 function randomIntFromInterval(min, max) {
   return Math.floor(Math.random() * (max - min + 1) + min);
 }
 
-// On button click, prepare and display
+/**
+ * @description helper function to generate fact
+ * @param {Dino Class} dino
+ * @param {Human Class} human
+ * @returns string
+ */
 function generateFact(dino, human) {
   if (dino.species === "Pigeon") {
     return dino.fact;
@@ -129,53 +214,67 @@ function generateFact(dino, human) {
   }
 }
 
-let grid = document.getElementById("grid");
-function displayInfographic() {
-  removeForm();
-  //   console.log(Date.now());
+/**
+ * @description Generate Tiles for each Dino in Array
+ * @param {Dino Class} dino
+ * @param {Human Class} human
+ * @returns html tile
+ */
+function generateDinoTile(dino, human) {
+  const tile = document.createElement("div");
+  tile.setAttribute("class", "grid-item");
+  const title = document.createElement("h3");
+  const img = document.createElement("img");
+  title.innerText = dino.species;
+  img.setAttribute("src", `images/${dino.species.toLowerCase()}.png`);
+
+  const fact = document.createElement("p");
+  fact.innerText = generateFact(dino, human);
+  tile.appendChild(fact);
+  tile.appendChild(title);
+  tile.appendChild(img);
+  return tile;
+}
+
+/**
+ * @description Add tiles to DOM
+ */
+function addTilesToDOM() {
+  let grid = document.getElementById("grid");
   human = getHuman();
-  //   console.log(human);
   getDinos().then((dinos) => {
-    // console.log(dinos);
-    let index = 0;
+    index = 0;
     dinos.forEach((dino) => {
       // place human in the middle
       if (index === 4) {
-        const cell = document.createElement("div");
-        cell.setAttribute("class", "grid-item");
-
-        const title = document.createElement("h3");
-        title.innerText = human.name;
-        cell.appendChild(title);
-
-        const img = document.createElement("img");
-        imgName = dino.species.toLowerCase();
-        img.setAttribute("src", `images/human.png`);
-        cell.appendChild(img);
-        grid.appendChild(cell);
-        index += 1;
+        let newTile = generateHumanTile(human);
+        grid.appendChild(newTile);
       }
-
-      const cell = document.createElement("div");
-      cell.setAttribute("class", "grid-item");
-
-      const title = document.createElement("h3");
-      title.innerText = dino.species;
-      cell.appendChild(title);
-
-      const img = document.createElement("img");
-      img.setAttribute("src", `images/${dino.species.toLowerCase()}.png`);
-      cell.appendChild(img);
-
-      const fact = document.createElement("p");
-      fact.innerText = generateFact(dino, human);
-      cell.appendChild(fact);
-      grid.appendChild(cell);
+      let newTile = generateDinoTile(dino, human);
+      grid.appendChild(newTile);
       index += 1;
     });
   });
 }
 
+/**
+ * @description Remove form from screen
+ */
+function removeForm() {
+  document.getElementById("dino-compare").style.display = "none";
+}
+
+/**
+ * @description On button click, prepare and display
+ */
+function displayInfographic() {
+  removeForm();
+  addTilesToDOM();
+}
+
+/**
+ * @description displayInfographic with IIFE
+ */
 (function () {
   document.getElementById("btn").addEventListener("click", displayInfographic);
 })();
