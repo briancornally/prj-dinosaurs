@@ -1,4 +1,6 @@
-# Object Oriented Javascript 
+# Udacity nd032 Intermediate JavaScript Nanodegree - Project 1 - Object Oriented Javascript 
+
+starter code: https://github.com/briancornally/prj-dinosaurs.git
 
 ## Student Instructions
 
